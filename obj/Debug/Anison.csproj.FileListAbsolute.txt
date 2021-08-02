@@ -1,0 +1,16 @@
+C:\Users\Alex\source\Anison\obj\Debug\Anison.csprojAssemblyReference.cache
+C:\Users\Alex\source\Anison\obj\Debug\Anison.Properties.Resources.resources
+C:\Users\Alex\source\Anison\obj\Debug\Anison.Resources.resources
+C:\Users\Alex\source\Anison\obj\Debug\Anison.csproj.GenerateResource.cache
+C:\Users\Alex\source\Anison\obj\Debug\Anison.csproj.CoreCompileInputs.cache
+C:\Users\Alex\source\Anison\bin\Debug\Anison.exe.config
+C:\Users\Alex\source\Anison\bin\Debug\Anison.exe
+C:\Users\Alex\source\Anison\bin\Debug\Anison.pdb
+C:\Users\Alex\source\Anison\bin\Debug\AxInterop.WMPLib.dll
+C:\Users\Alex\source\Anison\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Alex\source\Anison\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Alex\source\Anison\obj\Debug\Anison.csproj.CopyComplete
+C:\Users\Alex\source\Anison\obj\Debug\Anison.exe
+C:\Users\Alex\source\Anison\obj\Debug\Anison.pdb
+C:\Users\Alex\source\Anison\obj\Debug\Interop.IWshRuntimeLibrary.dll
+C:\Users\Alex\source\Anison\obj\Debug\Anison.csproj.ResolveComReference.cache

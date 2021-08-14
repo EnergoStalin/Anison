@@ -14,6 +14,7 @@ namespace Anison
         {
             InitializeComponent();
             AnisonLogger.SongChanged += OnSongChanged;
+            AnisonLogger.SongUpdated += OnSongUpdated;
 
             StartLogger();
         }
@@ -22,6 +23,11 @@ namespace Anison
             (new Thread(AnisonLogger.Log) { IsBackground = true }).Start();
         }
         void OnSongChanged(object sender, EventArgs args)
+        {
+            OnSongUpdated(sender, args);
+            onAir.Image = ((AnisonLogger.Song)sender).poster;
+        }
+        void OnSongUpdated(object sender, EventArgs args)
         {
             onAir.Text = ((AnisonLogger.Song)sender).ToString();
         }
@@ -40,7 +46,7 @@ namespace Anison
         }
         private void ChangeVolume(object sender, EventArgs e)
         {
-            AnisonWMP.Volume = int.Parse(Helpers.UncheckOtherToolStripMenuItems((ToolStripMenuItem)sender).Text);
+            AnisonPlayer.Volume = float.Parse(Helpers.UncheckOtherToolStripMenuItems((ToolStripMenuItem)sender).Text);
         }
         private void ToggleLog(object sender, EventArgs e)
         {
@@ -68,21 +74,21 @@ namespace Anison
         }
         private void PlayRadio(object sender, EventArgs e)
         {
-            AnisonWMP.Play();
+            AnisonPlayer.Play();
         }
         private void StopRadio(object sender, EventArgs e)
         {
-            AnisonWMP.Stop();
+            AnisonPlayer.Stop();
         }
         private void ChangeBitrate(object sender, EventArgs e)
         {
             Settings.Default.PrefferedBitrate = Helpers.UncheckOtherToolStripMenuItems((ToolStripMenuItem)sender).Text;
-            AnisonWMP.Restart();
+            AnisonPlayer.Restart();
         }
         public void Exit(object sender, EventArgs args)
         {
             TrayIcon.Visible = false;
-            AnisonWMP.Close();
+            AnisonPlayer.Close();
 
             Settings.Default.Save();
             Application.Exit();

@@ -1,11 +1,12 @@
 ﻿using Anison.Properties;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Net.Http;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Anison
@@ -18,13 +19,15 @@ namespace Anison
             DEBUG
         }
         public static event EventHandler SongChanged;
+        public static event EventHandler SongUpdated;
         public class Song : EventArgs
         {
             public string Title;
             public TimeSpan Duration;
+            public Image poster { get; set; }
             public override string ToString()
             {
-                return Title;
+                return string.Format("{0} {1}", Title, Duration.ToString(@"\(mm\:ss\)"));
             }
             public Song(string title, TimeSpan duration)
             {
@@ -38,7 +41,7 @@ namespace Anison
             }
         }
 
-        private static string RequestURL = "http://anison.fm/status.php?widget=false";
+        private static string RequestURL = "https://anison.fm/status.php";
         public static string LogPath { get; set; }
         public static readonly string LogName = "Music.sav";
         public static Song CurrentSong { get; private set; }
@@ -57,6 +60,8 @@ namespace Anison
 
         static AnisonLogger()
         {
+            client.DefaultRequestHeaders.Add("Referer", "https://anison.fm/");
+
             LogPath = Path.Combine(Program.RootPath, LogName);
             DropChop = Settings.Default.ExcludeChop;
             CurrentSong = new Song();
@@ -67,6 +72,8 @@ namespace Anison
         /// <returns></returns>
         private static Song NowPlaying()
         {
+            //Syncronyosly fetch api data
+            client.DefaultRequestHeaders.Add("Accept", "text/javascript");
             var getTask = client.GetAsync(RequestURL);
             if (getTask.Exception != null) throw getTask.Exception;
             getTask.Wait();
@@ -79,12 +86,27 @@ namespace Anison
             var readTask = getTask.Result.Content.ReadAsStringAsync();
             if (readTask.Exception != null) throw readTask.Exception;
             readTask.Wait();
+            var json = JObject.Parse(readTask.Result);
+            client.DefaultRequestHeaders.Remove("Accept");
 
-            var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(readTask.Result);
-            string title = Regex.Replace(json["on_air"], "(?:<[^>]+>)|(?:&#\\d+)", "").Replace("В эфире: ", "").Replace(";", "-");
+            CurrentSong.Title = string.Join(" - ", new string[] { (string)json["on_air"]["anime"], (string)json["on_air"]["track"] });
+            CurrentSong.Duration = TimeSpan.FromSeconds((int)json["duration"]);
 
-            CurrentSong.Title = title;
-            CurrentSong.Duration = TimeSpan.FromSeconds(int.Parse(json["duration"]));
+            //Retriving poster image
+            string posterLink = (string)json["on_air"]["link"];
+            getTask = client.GetAsync($"https://anison.fm/resources/poster/50/{posterLink}.jpg");
+            if (getTask.Exception != null) throw getTask.Exception;
+            getTask.Wait();
+            if (getTask.Result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                CurrentSong.Title = "Request Failed";
+                CurrentSong.Duration = ErrorDelay;
+                return CurrentSong;
+            }
+            var StreamReadTask = getTask.Result.Content.ReadAsStreamAsync();
+            StreamReadTask.Wait();
+            CurrentSong.poster = new Bitmap(StreamReadTask.Result);
+
             return CurrentSong;
         }
         public static void Log()
@@ -107,13 +129,19 @@ namespace Anison
                 finally
                 {
                     SongChanged.Invoke(CurrentSong, null);
-                    Thread.Sleep(CurrentSong.Duration);
+                    var updateDelay = TimeSpan.FromSeconds(1);
+                    while(CurrentSong.Duration.TotalSeconds >= 0)
+                    {
+                        Thread.Sleep(updateDelay);
+                        CurrentSong.Duration = CurrentSong.Duration.Add(-updateDelay);
+                        SongUpdated.Invoke(CurrentSong, null);
+                    }
                 }
             }
         }
         private static void WriteLog(Song song)
         {
-            WLog((new StringBuilder()).Append(song.Title).Append(song.Duration.ToString("' ('mm':'ss')'")).ToString());
+            WLog(song.ToString());
         }
         public static void WLog(string msg, LogLvl lvl = LogLvl.INFO)
         {

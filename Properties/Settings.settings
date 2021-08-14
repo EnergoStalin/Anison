@@ -5,8 +5,8 @@
     <Setting Name="AnisonURLTemplate" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://pool.anison.fm/AniSonFM({0})</Value>
     </Setting>
-    <Setting Name="SavedVolume" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">100</Value>
+    <Setting Name="SavedVolume" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="PrefferedBitrate" Type="System.String" Scope="User">
       <Value Profile="(Default)">320</Value>

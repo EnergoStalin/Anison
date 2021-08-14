@@ -37,10 +37,10 @@ namespace Anison.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int SavedVolume {
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public float SavedVolume {
             get {
-                return ((int)(this["SavedVolume"]));
+                return ((float)(this["SavedVolume"]));
             }
             set {
                 this["SavedVolume"] = value;

@@ -46,9 +46,11 @@ namespace Anison
             player.DropDownItems.Add(bitrate);
             player.DropDownItems.Add("Stop", null, StopRadio);
             //Create volume properties
-            for (int i = 0; i < 100;)
+            for (float i = 0f; i < 1f;)
             {
-                if (i < 30) i += 5; else i += 10;
+                if (i < 0.3f) i += 0.05f; else i += 0.1f;
+                i = (float)Math.Round(i, 2);
+
                 volume.DropDownItems.Add(new ToolStripMenuItem(i.ToString(), null, ChangeVolume) { Checked = Settings.Default.SavedVolume == i });
             }
             settings.DropDownItems.Add(new ToolStripMenuItem("Run At Startup", null, ToggleRunAtStartup) { CheckOnClick = true, Checked = Settings.Default.RunAtStartup });

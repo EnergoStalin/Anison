@@ -13,20 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Anison.UI
-{
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class Tray : Window
-	{
-		protected void InitializeComponent() {
-			
-		}
+namespace Anison.UI;
 
-		public Tray()
-		{
-			InitializeComponent();
-		}
+public partial class Tray : Window
+{
+	protected void InitializeComponent() {
+
+	}
+
+	public Tray()
+	{
+		InitializeComponent();
 	}
 }

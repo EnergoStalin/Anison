@@ -1,32 +1,35 @@
 namespace Anison.Tests;
 using Anison;
 using Anison.Logging;
+using System;
 using System.Threading;
 
-internal class Logger : ILogger {
+internal class Logger : ILogger
+{
     public Exception? EX;
-    public void WriteInfo(string msg) {}
-	public void WriteError(string msg, Exception? ex = default) { EX = ex; }
+    public void WriteInfo(string msg) { }
+    public void WriteError(string msg, Exception? ex = default) { EX = ex; }
 }
 
-public class UnitTest1
+public class StateTest
 {
     [Fact]
-    public void StateTest()
+    public void SongChanged()
     {
         var errorTrace = new Logger();
-        var state = new State(errorTrace);
+        using var state = new State(errorTrace);
         var wait = new ManualResetEvent(false);
-        state.SongChanged += (song) => {
-            if(song != default)
+        state.SongChanged += (song) =>
+        {
+            if (song != default)
                 wait.Set();
         };
 
-        if(wait.WaitOne(3000))
+        if (wait.WaitOne())
         {
             if(errorTrace.EX != default)
                 throw errorTrace.EX;
-
+                
             return;
         }
         else throw new Exception("Timeout reached");

@@ -17,12 +17,13 @@ namespace Anison.UI;
 
 public partial class Tray : Window
 {
-	protected void InitializeComponent() {
+    protected void InitializeComponent()
+    {
 
-	}
+    }
 
-	public Tray()
-	{
-		InitializeComponent();
-	}
+    public Tray()
+    {
+        InitializeComponent();
+    }
 }
